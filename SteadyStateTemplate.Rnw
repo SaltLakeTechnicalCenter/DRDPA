@@ -1,0 +1,97 @@
+
+\documentclass[letterpaper,11pt]{article}
+\usepackage[left=2cm, right=2cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+%% Hyphenation and word spacing %%
+\pretolerance=100 % default is 100
+\tolerance=200 % default is 200
+\frenchspacing % switches off extra spacing after punctuation
+
+%% Font %%
+\usepackage[scaled]{helvet}
+\renewcommand\familydefault{\sfdefault} 
+\usepackage[T1]{fontenc}
+\usepackage[helvet]{sfmath}
+\usepackage{url}
+\urlstyle{same} %same font/size for url
+
+%% Set document line spacing and indent spacing %%
+\usepackage{setspace} 
+\setstretch{1.1}
+\setlength\parindent{0pt}
+\usepackage{tocloft} % Set Table of Contents spacing
+\usepackage{parskip} % Adds paragraph spacing
+\setlength{\cftbeforesecskip}{6pt}
+
+%%  List package %%
+\usepackage{enumitem}
+\setlist*[enumerate]{topsep=0pt, partopsep=0pt}
+
+%% Table packages
+\usepackage{longtable}
+\usepackage{booktabs}
+
+
+\usepackage{xcolor}
+\usepackage{svg}
+
+\usepackage{datetime}
+
+\usepackage{fancyhdr}
+
+\setlength\headheight{24pt}
+
+\usepackage{lastpage}
+
+\fancypagestyle{firststyle}
+{
+   \fancyhf{}
+   \pagestyle{fancy}
+   \fancyfoot[C]{\thepage\ of \pageref{LastPage}}
+   \lhead{\fontfamily{phv}\fontsize{12}{10}\selectfont\color{blue}\textbf{OSHA Direct Reading Analysis Report}\color{white}.\\}
+   \rhead{\fontfamily{phv}\fontsize{12}{10}\selectfont\color{blue}\textbf{\today\ \currenttime}\color{white}.\\}
+}
+
+\begin{document}
+
+\pagestyle{firststyle}
+
+\textbf{Sample Number:} \Sexpr{paste(sample_number())}
+
+\textbf{Analyte:} \Sexpr{paste(analyte())}
+
+\textbf{Result:} \Sexpr{paste(ceiling_concn_NTP())} \Sexpr{paste(unit_name())} (@ 760 mmHg and 25 $^\circ$C)
+
+\textbf{Site Conditions:} \Sexpr{paste(pressure())} mmHg and \Sexpr{paste(temperature())} $^\circ$C
+
+\textbf{Start and Stop Times:} (no of measurements: \Sexpr{paste(sampling_time_data_points())})
+
+\begin{itemize}
+
+\item Sampling start time: \Sexpr{paste(TWA_start_time())}
+
+\item Sampling stop time: \Sexpr{paste(TWA_stop_time())}
+
+\end{itemize}
+
+\textbf{Monitor serial number:} \Sexpr{paste(serial_number())}
+
+\textbf{{\color{black}Plot of Date at NTP and The First Derivative:}}
+
+{\includegraphics[width=18cm, height = 7cm]{"derivative_plot"}}
+
+\textbf{{\color{black}Plot of All Data:}}
+
+{\includegraphics[width=18cm, height = 7cm]{sensor_data_plot}}
+
+\pagebreak 
+
+<<echo=FALSE>>=
+library(kableExtra)
+
+  kbl(event_data(), caption = "Event Log", format = "latex", longtable = TRUE, booktabs = TRUE)  
+
+  kbl(zero_derivative(), caption = "First Derivative Data", format = "latex", longtable = TRUE, booktabs = TRUE)
+@
+
+\end{document}
